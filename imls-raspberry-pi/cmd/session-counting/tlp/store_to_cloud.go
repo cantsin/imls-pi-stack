@@ -8,16 +8,16 @@ import (
 
 	"gsa.gov/18f/config"
 	"gsa.gov/18f/http"
-	"gsa.gov/18f/session-counter/api"
 )
 
 func report(service string, cfg *config.Config, session_id int, arr []map[string]string) (http_error_count int, err error) {
 	http_error_count = 0
 
-	err = api.StoreDevicesCount(cfg, session_id, arr)
-	if err != nil {
+	uri := http.FormatUri(cfg.Umbrella.Scheme, cfg.Umbrella.Host, cfg.Umbrella.Data)
+	_, err2 := http.PostJSON(cfg, uri, arr)
+	if err2 != nil {
 		log.Println("report2:", service, "results POST failure")
-		log.Println(err)
+		log.Println(err2)
 		http_error_count = http_error_count + 1
 	}
 
@@ -41,7 +41,7 @@ func StoreToCloud(ka *Keepalive, cfg *config.Config, ch_data <-chan []map[string
 	}
 
 	// For event logging
-	el := http.NewEventLogger(cfg)
+	// el := http.NewEventLogger(cfg)
 
 	// We never reset anything when storing to the cloud; that is only used by the SQLite version.
 	// Spawn a concurrent process to consume everything that comes in on the reset channel.
@@ -66,12 +66,9 @@ func StoreToCloud(ka *Keepalive, cfg *config.Config, ch_data <-chan []map[string
 
 		// This is the [ uid -> ticks ] map (uid looks like "Next:0")
 		case arr := <-ch_data:
-			event_ndx, logerr := el.Log("logging_devices", nil)
-			if logerr != nil {
-				http_error_count += 1
-				log.Println("reportout: error in event logging: ", logerr)
-				log.Println("reportout: HTTP_ERROR_COUNT", http_error_count)
-			}
+			// TODO: event ids are broken and we need a better approach.
+			event_ndx := 1;
+			// event_ndx, logerr := el.Log("logging_devices", nil)
 
 			// Overwrite the existing event IDs in the prepared data.
 			// We want it to connect to the event logged in the DB.

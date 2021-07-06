@@ -12,22 +12,17 @@ import (
 	"gsa.gov/18f/cryptopasta"
 )
 
-// This might not exist.
-// A wrapper script should require a valid path.
-var configPath = "config.yaml"
-
-func SetConfigPath(path string) {
-	configPath = path
-}
-
-func GetConfigPath() string {
-	return configPath
-}
-
 func NewConfig() *Config {
 	cfg := Config{}
 	cfg.setDefaults()
 	return &cfg
+}
+
+func NewConfigFromPath(path string) (*Config, error) {
+	cfg := Config{}
+	cfg.setDefaults()
+	err := cfg.ReadConfig(path)
+	return &cfg, err
 }
 
 func (cfg *Config) ReadConfig(path string) error {
@@ -68,7 +63,18 @@ func (cfg *Config) GetLoggers() []string {
 	return cfg.Loggers
 }
 
+func (cfg *Config) GetLogLevel() string {
+	if cfg.LogLevel == "" {
+		return "ERROR"
+	} else {
+		return cfg.LogLevel
+	}
+}
+
 func (cfg *Config) setDefaults() {
+	cfg.LogLevel = "INFO"
+	cfg.Loggers = []string{"local:stderr", "local:tmp"}
+
 	cfg.Monitoring.PingInterval = 30
 	cfg.Monitoring.MaxHTTPErrorCount = 8
 	cfg.Monitoring.HTTPErrorIntervalMins = 10
@@ -89,7 +95,6 @@ func (cfg *Config) setDefaults() {
 
 	cfg.StorageMode = "sqlite"
 
-	cfg.Local.Logfile = "/opt/imls/log.json"
 	cfg.Local.Crontab = "0 0 * * *"
 	cfg.Local.SummaryDB = "/opt/imls/summary.sqlite"
 	cfg.Local.TemporaryDB = "/tmp/imls.sqlite"
@@ -121,6 +126,7 @@ type Config struct {
 		DeviceTag string `yaml:"device_tag"`
 		FCFSId    string `yaml:"fcfs_seq_id"`
 	} `yaml:"auth"`
+	LogLevel     string `yaml:"log_level"`
 	Loggers    []string `yaml:"loggers"`
 	Monitoring struct {
 		PingInterval          int `yaml:"pinginterval"`
@@ -149,7 +155,6 @@ type Config struct {
 	Serial      string `yaml:"serial"`
 	StorageMode string `yaml:"storagemode"`
 	Local       struct {
-		Logfile      string `yaml:"logfile"`
 		Crontab      string `yaml:"crontab"`
 		SummaryDB    string `yaml:"summary_db"`
 		TemporaryDB  string `yaml:"temporary_db"`

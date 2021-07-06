@@ -3,10 +3,10 @@ package logwrapper
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -35,15 +35,17 @@ const LOGDIR = "/var/log/session-counter"
 
 var logLevel int = ERROR
 
-func (l *StandardLogger) SetLogLevel(lvl int) {
-	// Don't allow broken logging levels.
-	if lvl > DEBUG && lvl <= FATAL {
-		logLevel = lvl
+func (l *StandardLogger) SetLogLevel(level string) {
+	switch strings.ToLower(level) {
+	case "debug":
+                logLevel = DEBUG
+	case "info":
+                logLevel = INFO
+	case "warn":
+		logLevel = WARN
+	default:
+		logLevel = ERROR
 	}
-}
-
-func (l *StandardLogger) GetLogLevel() int {
-	return logLevel
 }
 
 func (l *StandardLogger) GetLogLevelName() string {
@@ -96,13 +98,18 @@ func newLogger(cfg *config.Config) *StandardLogger {
 	// If we have a config file, grab the loggers defined there.
 	// Otherwise, use stderr.
 	loggers := make([]string, 0)
+	level := "ERROR"
 	if cfg == nil {
 		loggers = append(loggers, "local:stderr")
 	} else {
-		log.Println("cfg not nil")
 		loggers = cfg.GetLoggers()
+		level = cfg.GetLogLevel()
 	}
+<<<<<<< HEAD
 	// log.Println("loggers", loggers)
+=======
+
+>>>>>>> 95bdb6adb7e97656b31f967c9327dabcdd5016b7
 	writers := make([]io.Writer, 0)
 
 	for _, l := range loggers {
@@ -140,8 +147,14 @@ func newLogger(cfg *config.Config) *StandardLogger {
 	baseLogger.SetOutput(mw)
 
 	// If we have a valid config file, and lw is not already configured...
+<<<<<<< HEAD
 	standardLogger = &StandardLogger{logger: baseLogger}
 	standardLogger.logger.Formatter = &logrus.JSONFormatter{}
+=======
+	standardLogger = &StandardLogger{baseLogger}
+	standardLogger.Formatter = &logrus.JSONFormatter{}
+	standardLogger.SetLogLevel(level)
+>>>>>>> 95bdb6adb7e97656b31f967c9327dabcdd5016b7
 
 	return standardLogger
 }

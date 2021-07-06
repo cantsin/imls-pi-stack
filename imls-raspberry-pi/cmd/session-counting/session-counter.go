@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -63,7 +62,6 @@ func keepalive(ka *tlp.Keepalive, cfg *config.Config) {
 }
 
 func handleFlags() *config.Config {
-	logLvlPtr := flag.String("log-level", "ERROR", "Set log level (DEBUG, INFO, WARN).")
 	versionPtr := flag.Bool("version", false, "Get the software version and exit.")
 	showKeyPtr := flag.Bool("show-key", false, "Tests key decryption.")
 	configPathPtr := flag.String("config", "", "Path to config.yaml. REQUIRED.")
@@ -76,17 +74,6 @@ func handleFlags() *config.Config {
 		os.Exit(0)
 	}
 
-	switch strings.ToLower(*logLvlPtr) {
-	case "debug":
-		lw.SetLogLevel(logwrapper.DEBUG)
-	case "info":
-		lw.SetLogLevel(logwrapper.INFO)
-	case "warn":
-		lw.SetLogLevel(logwrapper.WARN)
-	default:
-		lw.SetLogLevel(logwrapper.ERROR)
-	}
-
 	// Make sure a config is passed.
 	if *configPathPtr == "" {
 		lw.Fatal("The flag --config MUST be provided.")
@@ -96,12 +83,9 @@ func handleFlags() *config.Config {
 	if _, err := os.Stat(*configPathPtr); os.IsNotExist(err) {
 		lw.Info("Looked for config at: %v", *configPathPtr)
 		lw.Fatal("Cannot find config file. Exiting.")
-	} else {
-		config.SetConfigPath(*configPathPtr)
 	}
 
-	cfg := config.NewConfig()
-	err := cfg.ReadConfig(*configPathPtr)
+	cfg, err := config.NewConfigFromPath(*configPathPtr)
 	if err != nil {
 		lw.Fatal("session-counter: error loading config.")
 	}
