@@ -3,6 +3,7 @@ package logwrapper
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -38,9 +39,9 @@ var logLevel int = ERROR
 func (l *StandardLogger) SetLogLevel(level string) {
 	switch strings.ToLower(level) {
 	case "debug":
-                logLevel = DEBUG
+		logLevel = DEBUG
 	case "info":
-                logLevel = INFO
+		logLevel = INFO
 	case "warn":
 		logLevel = WARN
 	default:
@@ -143,14 +144,9 @@ func newLogger(cfg *config.Config) *StandardLogger {
 	baseLogger.SetOutput(mw)
 
 	// If we have a valid config file, and lw is not already configured...
-<<<<<<< HEAD
-	standardLogger = &StandardLogger{logger: baseLogger}
-	standardLogger.logger.Formatter = &logrus.JSONFormatter{}
-=======
 	standardLogger = &StandardLogger{baseLogger}
-	standardLogger.Formatter = &logrus.JSONFormatter{}
+	standardLogger.logger.Formatter = &logrus.JSONFormatter{}
 	standardLogger.SetLogLevel(level)
->>>>>>> 95bdb6adb7e97656b31f967c9327dabcdd5016b7
 
 	return standardLogger
 }
