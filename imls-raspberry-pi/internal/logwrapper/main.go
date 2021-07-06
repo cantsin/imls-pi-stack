@@ -105,11 +105,7 @@ func newLogger(cfg *config.Config) *StandardLogger {
 		loggers = cfg.GetLoggers()
 		level = cfg.GetLogLevel()
 	}
-<<<<<<< HEAD
 	// log.Println("loggers", loggers)
-=======
-
->>>>>>> 95bdb6adb7e97656b31f967c9327dabcdd5016b7
 	writers := make([]io.Writer, 0)
 
 	for _, l := range loggers {
