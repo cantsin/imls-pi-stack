@@ -1,37 +1,38 @@
-log_level: DEBUG
-loggers:
-  - "local:stderr"
-  - "local:tmp"
-  - "api:directus"
-auth:
-  api_token: "MYAPITOKEN"
-  device_tag: "MYDEVICETAG"
-  fcfs_seq_id: "MYFCFSSEQID"
+device:
+  api_token: MYAPITOKENHERE
+  device_tag: MYDEVICETAGHERE
+  fcfs_seq_id: MYFCFSSEQIDHERE
+logging:
+  log_level: DEBUG
+  loggers:
+  - local:stderr
+  - local:tmp
+  - api:directus
 monitoring:
-  pinginterval: 30
-  max_http_error_count: 8
-  http_error_interval_mins: 10
-  uniqueness_window: 120
-  minimum_minutes: 30
+  uniqueness_window: 1440
+  minimum_minutes: 5
   maximum_minutes: 600
+  reset_cron: 0 0 * * *
 umbrella:
-  scheme: "https"
-  host: "api.data.gov"
-  data: "/TEST/10x-imls/v2/durations/"
-  logging: "/TEST/10x-imls/v2/events/"
-wireshark:
-  duration: 45
-  adapter: ""
-  path: "/usr/bin/tshark"
-  check_wlan: "1"
-manufacturers:
-  db: "/opt/imls/manufacturers.sqlite"
+  scheme: https
+  host: api.data.gov
+  paths:
+    durations: /TEST/10x-imls/v2/durations/
+    events: /TEST/10x-imls/v2/events/
+executables:
+  wireshark:
+    duration: 45
+    wireshark_path: /usr/bin/tshark
+  lshw_path: /usr/bin/lshw
+  ip_path: /usr/bin/ip
+databases:
+  manufacturers_path: /opt/imls/manufacturers.sqlite
+  durations_path: /www/imls/durations.sqlite
+  queues_path: /www/imls/queues.sqlite
+paths:
+  www:
+    root: /www/imls
+    images: /www/imls/images
 serial: ""
-storagemode: prod
-local:
-  logfile: "/opt/imls/log.json"
-  crontab: "0 0 * * *"
-  summary_db: "/opt/imls/summary.sqlite"
-  temporary_db: "/tmp/imls.sqlite"
-  web_directory: "/www/imls/"
-lshw_path: "/usr/bin/lshw"
+storagemode: sqlite
+runmode: prod
