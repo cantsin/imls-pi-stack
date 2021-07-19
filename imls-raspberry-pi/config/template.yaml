@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 serial: ""
 storagemode: sqlite
 runmode: test
@@ -16,12 +17,30 @@ monitoring:
   minimum_minutes: 5
   maximum_minutes: 600
   reset_cron: "*/6 * * * *"
+=======
+device:
+  api_token: MYAPITOKENHERE
+  device_tag: MYDEVICETAGHERE
+  fcfs_seq_id: MYFCFSSEQIDHERE
+logging:
+  log_level: DEBUG
+  loggers:
+  - local:stderr
+  - local:tmp
+  - api:directus
+monitoring:
+  uniqueness_window: 1440
+  minimum_minutes: 5
+  maximum_minutes: 600
+  reset_cron: 0 0 * * *
+>>>>>>> 5fa0616a8126c5e051d89209d67d7f89b0868c65
 umbrella:
   scheme: https
   host: api.data.gov
   paths:
     durations: /TEST/10x-imls/v2/durations/
     events: /TEST/10x-imls/v2/events/
+<<<<<<< HEAD
 executables:  
   wireshark:
     duration: 45
@@ -36,3 +55,22 @@ paths:
   www:
     root: /www/imls
     images: /www/imls/images
+=======
+executables:
+  wireshark:
+    duration: 45
+    wireshark_path: /usr/bin/tshark
+  lshw_path: /usr/bin/lshw
+  ip_path: /usr/bin/ip
+databases:
+  manufacturers_path: /opt/imls/manufacturers.sqlite
+  durations_path: /www/imls/durations.sqlite
+  queues_path: /www/imls/queues.sqlite
+paths:
+  www:
+    root: /www/imls
+    images: /www/imls/images
+serial: ""
+storagemode: sqlite
+runmode: prod
+>>>>>>> 5fa0616a8126c5e051d89209d67d7f89b0868c65
