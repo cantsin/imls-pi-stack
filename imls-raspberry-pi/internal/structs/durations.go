@@ -18,7 +18,8 @@ func (a ByStart) Less(i, j int) bool {
 func (a ByStart) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 
 type Duration struct {
-	Id        int    `db:"id" sqlite:"INTEGER PRIMARY KEY AUTOINCREMENT"`
+	// Id        int    `db:"id" sqlite:"INTEGER PRIMARY KEY AUTOINCREMENT"`
+	Id        int    `db:"id" type:"INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"`
 	PiSerial  string `db:"pi_serial" sqlite:"TEXT"`
 	SessionId string `db:"session_id" sqlite:"TEXT"`
 	FCFSSeqId string `db:"fcfs_seq_id" sqlite:"TEXT"`
@@ -39,7 +40,7 @@ func (d Duration) AsMap() map[string]interface{} {
 		f := rt.Field(i)
 		r := reflect.ValueOf(d)
 		// log.Println("tag db", f.Tag.Get("db"))
-		if !strings.Contains(f.Tag.Get("sqlite"), "AUTOINCREMENT") {
+		if !strings.Contains(f.Tag.Get("type"), "AUTOINCREMENT") {
 			col := strings.ReplaceAll(strings.Split(f.Tag.Get("db"), ",")[0], "\"", "")
 			nom := strings.ReplaceAll(fmt.Sprintf("%v", reflect.Indirect(r).FieldByName(f.Name)), "\"", "")
 			m[string(col)] = nom

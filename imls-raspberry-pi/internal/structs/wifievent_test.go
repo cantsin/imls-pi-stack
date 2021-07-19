@@ -7,7 +7,7 @@ import (
 
 func TestAsMapWifi(t *testing.T) {
 	e := WifiEvent{
-		ID:                1,
+		Id:                1,
 		FCFSSeqId:         "asdf",
 		DeviceTag:         "abd-dc",
 		Localtime:         time.Now().Format(time.RFC3339),

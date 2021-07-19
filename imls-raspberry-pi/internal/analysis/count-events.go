@@ -57,11 +57,11 @@ func getPatronFirstLast(patronId int, events []structs.WifiEvent) (int, int) {
 
 	for _, e := range events {
 		if e.PatronIndex == patronId {
-			if e.ID < first {
-				first = e.ID
+			if e.Id < first {
+				first = e.Id
 			}
-			if e.ID > last {
-				last = e.ID
+			if e.Id > last {
+				last = e.Id
 			}
 		}
 	}
@@ -71,7 +71,7 @@ func getPatronFirstLast(patronId int, events []structs.WifiEvent) (int, int) {
 
 func getEventIdTime(events []structs.WifiEvent, eventId int) (t time.Time) {
 	for _, e := range events {
-		if e.ID == eventId {
+		if e.Id == eventId {
 			t, _ = time.Parse(time.RFC3339, e.Localtime)
 			break
 		}
@@ -88,7 +88,7 @@ func doCounting(events []structs.WifiEvent) *Counter {
 	checked := make(map[int]bool)
 	for _, e := range events {
 		// If the event id changes, bump our y pointer down.
-		if e.ID != prevEvent.ID {
+		if e.Id != prevEvent.Id {
 			prevEvent = e
 		}
 		if _, ok := checked[e.PatronIndex]; ok {
@@ -327,7 +327,7 @@ func MultiDayDurations(swap bool, newPid int, events []structs.WifiEvent) (map[i
 // This can then be written to disk.
 func Summarize(events []structs.WifiEvent) (c *Counter, d map[int]structs.Duration) {
 	sort.Slice(events, func(i, j int) bool {
-		return events[i].ID < events[j].ID
+		return events[i].Id < events[j].Id
 	})
 	c = doCounting(events)
 	d = durationSummary(events)
