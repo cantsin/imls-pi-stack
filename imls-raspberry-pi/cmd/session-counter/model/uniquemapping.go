@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 
-	"gsa.gov/18f/internal/config"
 	"gsa.gov/18f/cmd/session-counter/api"
+	"gsa.gov/18f/internal/interfaces"
 )
 
 // This probably should be a proper database.
@@ -14,10 +14,10 @@ type uniqueMappingDB struct {
 	mfg     map[string]string
 	anonmfg map[string]int
 	tick    map[string]int
-	cfg     *config.Config
+	cfg     interfaces.Config
 }
 
-func NewUMDB(cfg *config.Config) *uniqueMappingDB {
+func NewUMDB(cfg interfaces.Config) *uniqueMappingDB {
 	umdb := &uniqueMappingDB{
 		lastid:  new(int),
 		uid:     make(map[string]int),
